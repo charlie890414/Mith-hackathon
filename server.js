@@ -25,7 +25,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({
     storage: storage
-})
+});
 
 const clientId = '0bb0dc2308c147f3a6b9f47aee5fbf5e';
 const clientSecret = '6bbd412f129674644d12c075336f1a7285cb586770e904049acc184174e25e66e036427201fab9a6dd2e3df81503e5eafd6750573fd5def49e695bf0d4511c88';
@@ -56,6 +56,12 @@ app.get('/uploads/:id', function (request, response) {
 
 app.get('/getmovielist', function (request, response) {
     movie.find({}).exec(function (err, result) {
+        response.status(200).send(result);
+    });
+});
+
+app.get('/getmenulist', function (request, response) {
+    menu.find({}).exec(function (err, result) {
         response.status(200).send(result);
     });
 });
@@ -183,7 +189,7 @@ app.get('/success', function (request, response) {
         account.update({
             "_id": request.query.user_id
         }, {
-            "token": data["token"]
+            "token": data.token
         }).exec(function (err) {
             if (err) {
                 console.log(err);
