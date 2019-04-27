@@ -57,9 +57,18 @@ app.get('/delbindURI', function (request, response) {
         sdk.delUnbindToken({
             token: result.token
         }).then(data => {
-            console.log(data);
-            result.token = null;
-            response.status(200).send("OK");
+            account.update({
+                '_id': request.query.user_id
+            },{
+                "token": null
+            }).exec(function (err, result) {
+                if(err){
+                    response.status(400).send("Error");
+                }
+                else{
+                    response.status(200).send("OK");
+                }
+            });
         }).catch(error => {
             response.status(400).send("Error");
         });
@@ -148,7 +157,7 @@ app.get('/success', function (request, response) {
         state: request.query.state
     }).then(data => {
         console.log(data);
-        account.updateOne({
+        account.update({
             "_id": request.query.user_id
         }, {
             "token": data
