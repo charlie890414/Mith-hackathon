@@ -1,10 +1,14 @@
 var mongoose = require('mongoose');
 
 var account = mongoose.Schema({
-    account : String,
-    password    : String,
-    token   : String
+    account: {type: String, unique: true},
+    password: String,
+    token: String,
+    follow: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'account'
+    }]
 });
 
 /* export module */
-module.exports = mongoose.model( 'account', account );
+module.exports = mongoose.model('account', account);
