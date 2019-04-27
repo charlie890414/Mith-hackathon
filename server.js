@@ -160,7 +160,7 @@ app.get('/success', function (request, response) {
         account.update({
             "_id": request.query.user_id
         }, {
-            "token": data
+            "token": data[token]
         }).exec(function (err) {
             if (err) {
                 console.log(err);
