@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Blob-FileServer</title>
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        tr {
+            margin: 0.5em;
+            width: 100%;
+            height: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <table style="width: 100%;">
+        <% Object.keys(folders).forEach(function(id) { %>
+        <tr>
+            <th>
+                <%- id %>
+            </th>
+            <th><a href="/<%- id %>">link</a></th>
+        </tr>
+        <% }); %>
+    </table>
+</body>
+
+</html>
