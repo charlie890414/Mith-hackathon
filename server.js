@@ -27,22 +27,19 @@ app.get('/', function (request, response) {
 app.get('/success', function (request, response) {
     console.log(request.query.grant_code);
     console.log(request.query.state);
-    sdk.getAccessToken()
-    getAccessToken({
+    sdk.getAccessToken({
         grantCode : request.query.grant_code,
         state : request.query.state
     }).then(data => {
         console.log(data); 
+        response.status(200).send("<script>window.close();</script>");
     }).catch(error => {
-        console.log(error); 
+        response.status(200).send("Error occur");
     });
-    response.status(200).send();
 });
 
 app.get('/faillure', function (request, response) {
-    console.log(request.query.grant_code);
-    console.log(request.query.state);
-    response.status(200).send();
+    response.status(200).send("Error occur");
 });
 
 
