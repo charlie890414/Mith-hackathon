@@ -16,19 +16,22 @@ const sdk = new MithVaultSDK({ clientId, clientSecret, miningKey });
 // });
 
 app.get('/', function (request, response) {
-    response.status(200).send(sdk.getBindURI());
+    const url = sdk.getBindURI();
+    response.status(200).send("<a href="+url+">"+url+"</a>");
 });
 
 app.get('/success', function (request, response) {
-    console.log(req.query.grant_code)
-    console.log(req.query.state)
+    console.log(request.query.grant_code);
+    console.log(request.query.state);
+    response.status(200).send();
 });
 
 app.get('/faillure', function (request, response) {
-    console.log(req.query.grant_code)
-    console.log(req.query.state)
+    console.log(request.query.grant_code);
+    console.log(request.query.state);
+    response.status(200).send();
 });
 
 
-app.listen(3000);
-console.log("Running at Port 3000");
+app.listen(5000);
+console.log("Running at Port 5000");
