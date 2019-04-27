@@ -1,39 +1,57 @@
-const CACHE_NAME = 'static-cache-v1';
-
-// CODELAB: Add list of files to cache here.
-const FILES_TO_CACHE = [
-    "index.html"
+const filesToCache = [
+	'/',
+	'/index.html'
 ];
+const cacheName = 'static-v1';
 
-self.addEventListener('install', (evt) => {
-    console.log('[ServiceWorker] Install');
-    // CODELAB: Precache static resources here.
+// install
+self.addEventListener('install', event => {
+	console.log('installing…');
+	event.waitUntil(
+		caches.open(cacheName).then(cache => {
+			console.log('Caching app ok');
+			return cache.addAll(filesToCache);
+		})
+	);
+}); 
 
-    self.skipWaiting();
+// activate
+self.addEventListener('activate', event => {
+	console.log('now ready to handle fetches!');
+	  event.waitUntil(
+		caches.keys().then(function(cacheNames) {
+			var promiseArr = cacheNames.map(function(item) {
+				if (item !== cacheName) {
+					// Delete that cached file
+					return caches.delete(item);
+				}
+			})
+			return Promise.all(promiseArr);
+		})
+	); // end e.waitUntil
 });
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(async function () {
-        const cache = await caches.open('mysite-static-v3');
-        await cache.addAll([
-            '/css/whatever-v3.css',
-            '/css/imgs/sprites-v6.png',
-            '/css/fonts/whatever-v8.woff',
-            '/js/all-min-v4.js'
-            // etc
-        ]);
-    }());
-});
+// fetch
+self.addEventListener('fetch', event => {
+	console.log('now fetch!');
+	console.log('event.request:', event.request);
+	console.log('[ServiceWorker] Fetch', event.request.url);
+});  
 
-self.addEventListener('activate', (evt) => {
-    console.log('[ServiceWorker] Activate');
-    // CODELAB: Remove previous cached data from disk.
-
-    self.clients.claim();
-});
-
-self.addEventListener('fetch', (evt) => {
-    console.log('[ServiceWorker] Fetch', evt.request.url);
-    // CODELAB: Add fetch event handler here.
-
-});
+self.addEventListener('fetch', event => {
+	const dataUrl = 'http://localhost:5000';
+	event.respondWith(
+		caches.match(event.request).then(function (response) {
+			return response || fetch(event.request).then(res =>
+				// 存 caches 之前，要先打開 caches.open(dataCacheName)
+				caches.open(dataCacheName)
+				.then(function(cache) {
+					// cache.put(key, value)
+					// 下一次 caches.match 會對應到 event.request
+					cache.put(event.request, res.clone());
+					return res;
+				})
+			);
+		})
+	);
+}); 
