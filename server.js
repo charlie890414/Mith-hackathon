@@ -37,6 +37,7 @@ app.get('/delbindURI', function (request, response) {
         sdk.delUnbindToken({ token : result.token }).then(data => {
             console.log(data);
             response.status(200).send("OK");
+            result.token = null;
         }).catch(error => {
             response.status(500).send("Error");
         });
