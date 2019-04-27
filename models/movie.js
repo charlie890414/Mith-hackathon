@@ -9,10 +9,7 @@ var movie = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'menu'
     }],
-    movie: {
-        data: Buffer,
-        contentType: String
-    }
+    movie: Buffer
 });
 
 /* export module */
