@@ -133,11 +133,24 @@ app.post('/login', function (request, response) {
     else response.status(400).send("Input Error");
 });
 
+app.get('/check', function (request, response) {
+    account.findOne({
+        'account': request.query.account
+    }).exec(function (err, result) {
+        if (result.token!=null) {
+            response.status(200).send(result._id);
+        } else {
+            response.status(400).send("Error");
+        }
+    });
+});
+
 app.post('/signup', function (request, response) {
     if (request.query.account && request.query.password)
         new account({
             "account": request.query.account,
-            "password": bcrypt.hashSync(request.query.password, bcrypt.genSaltSync(8), null)
+            "password": bcrypt.hashSync(request.query.password, bcrypt.genSaltSync(8), null),
+            "token":null
         }).save(function (err, results) {
             if (err) {
                 response.status(400).send("Error");
