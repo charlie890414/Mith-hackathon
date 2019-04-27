@@ -14,7 +14,6 @@ const account = require('./models/account');
 const clientId = '0bb0dc2308c147f3a6b9f47aee5fbf5e';
 const clientSecret = '6bbd412f129674644d12c075336f1a7285cb586770e904049acc184174e25e66e036427201fab9a6dd2e3df81503e5eafd6750573fd5def49e695bf0d4511c88';
 const miningKey = 'cf';
-
 const sdk = new MithVaultSDK({
     clientId,
     clientSecret,
@@ -54,7 +53,7 @@ app.post('/login', function (request, response) {
                 response.status(500).send("Error");
             }
         });
-    else response.status(500).send("Error");
+    else response.status(500).send("Input Error");
 });
 
 app.post('/signup', function (request, response) {
@@ -69,7 +68,7 @@ app.post('/signup', function (request, response) {
                 response.status(200).send(results._id);
             }
         });
-    else response.status(500).send("Error");
+    else response.status(500).send("Input Error");
 });
 
 app.get('/success', function (request, response) {
