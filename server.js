@@ -7,12 +7,14 @@ mongoose.connect('mongodb://localhost:27017/Mith', {
 });
 var bcrypt = require('bcrypt-nodejs');
 const app = new express();
-const recipe = require('./models/menu');
+const menu = require('./models/menu');
+const movie = require('./models/movie');
 const account = require('./models/account');
 
 const clientId = '0bb0dc2308c147f3a6b9f47aee5fbf5e';
 const clientSecret = '6bbd412f129674644d12c075336f1a7285cb586770e904049acc184174e25e66e036427201fab9a6dd2e3df81503e5eafd6750573fd5def49e695bf0d4511c88';
 const miningKey = 'cf';
+
 const sdk = new MithVaultSDK({
     clientId,
     clientSecret,
@@ -41,29 +43,33 @@ app.get('/delbindURI', function (request, response) {
 });
 
 app.post('/login', function (request, response) {
-    account.findOne({
-        'account': request.query.account
-    }).exec(function (err, result) {
-        console.log(result);
-        if (bcrypt.compareSync(request.query.password, result.password)) {
-            response.status(200).send(result._id);
-        } else {
-            response.status(500).send("Error");
-        }
-    });
+    if(request.query.account&&request.query.password)
+        account.findOne({
+            'account': request.query.account
+        }).exec(function (err, result) {
+            console.log(result);
+            if (bcrypt.compareSync(request.query.password, result.password)) {
+                response.status(200).send(result._id);
+            } else {
+                response.status(500).send("Error");
+            }
+        });
+    else response.status(500).send("Error");
 });
 
 app.post('/signup', function (request, response) {
-    new account({
-        "account": request.query.account,
-        "password": bcrypt.hashSync(request.query.password, bcrypt.genSaltSync(8), null)
-    }).save(function (err, results) {
-        if (err) {
-            response.status(500).send("Error");
-        } else {
-            response.status(200).send(results._id);
-        }
-    });
+    if(request.query.account&&request.query.password)
+        new account({
+            "account": request.query.account,
+            "password": bcrypt.hashSync(request.query.password, bcrypt.genSaltSync(8), null)
+        }).save(function (err, results) {
+            if (err) {
+                response.status(500).send("Error");
+            } else {
+                response.status(200).send(results._id);
+            }
+        });
+    else response.status(500).send("Error");
 });
 
 app.get('/success', function (request, response) {
