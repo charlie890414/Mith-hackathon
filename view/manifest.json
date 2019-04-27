@@ -1,0 +1,15 @@
+{
+    "short_name": "Maps",
+    "name": "Google Maps",
+    "icons": [
+      {
+        "src": "/images/icons.jpg",
+        "type": "image/jpg",
+        "sizes": "1280x1184"
+      }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#3367D6",
+    "display": "standalone",
+    "theme_color": "#3367D6"
+  }

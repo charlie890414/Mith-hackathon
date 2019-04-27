@@ -3,6 +3,7 @@ const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
+const bodyParser = require('body-parser');
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/Mith', {
     useNewUrlParser: true
@@ -33,6 +34,15 @@ const sdk = new MithVaultSDK({
     clientId,
     clientSecret,
     miningKey
+});
+
+
+app.use(express.static(__dirname + '/view'));
+
+app.set('view engine', 'html');
+
+app.get('/', function (request, response) {
+    response.status(200).render("index.html");
 });
 
 app.get('/bindURI', function (request, response) {
