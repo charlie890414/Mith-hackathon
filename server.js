@@ -135,10 +135,10 @@ app.post('/login', function (request, response) {
 
 app.get('/check', function (request, response) {
     account.findOne({
-        'account': request.query.account
+        '_id': request.query.user_id
     }).exec(function (err, result) {
         if (result.token!=null) {
-            response.status(200).send(result._id);
+            response.status(200).send("OK");
         } else {
             response.status(400).send("Error");
         }
