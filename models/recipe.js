@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 var recipe = mongoose.Schema({
-    name     : String,
-    message     : String
+    name    : String,
+    message : String
 });
 
 /* export module */
