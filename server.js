@@ -132,12 +132,11 @@ app.get('/success', function (request, response) {
             "token": data
         }).exec(function (err) {
             if (err) {
-                res.send("There was a problem updating the information to the database.");
+                response.status(400).send("Error");
             } else {
-                res.redirect("/");
+                response.status(200).send("Ok");
             }
         });
-        response.status(200).send("OK");
     }).catch(error => {
         response.status(400).send("Error");
     });
