@@ -25,7 +25,7 @@ self.addEventListener('activate', event => {
 					// Delete that cached file
 					return caches.delete(item);
 				}
-			})
+			});
 			return Promise.all(promiseArr);
 		})
 	); // end e.waitUntil
@@ -44,7 +44,7 @@ self.addEventListener('fetch', event => {
 		caches.match(event.request).then(function (response) {
 			return response || fetch(event.request).then(res =>
 				// 存 caches 之前，要先打開 caches.open(dataCacheName)
-				caches.open(dataCacheName)
+				caches.open(cacheName)
 				.then(function(cache) {
 					// cache.put(key, value)
 					// 下一次 caches.match 會對應到 event.request

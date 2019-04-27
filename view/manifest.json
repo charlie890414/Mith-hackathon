@@ -3,12 +3,17 @@
     "name": "Google Maps",
     "icons": [
       {
-        "src": "/images/icons.jpg",
-        "type": "image/jpg",
-        "sizes": "1280x1184"
+        "src": "/images/icons.png",
+        "type": "image/png",
+        "sizes": "256x256"
+      },
+      {
+        "src": "/images/icons2.png",
+        "type": "image/png",
+        "sizes": "512x512"
       }
     ],
-    "start_url": "/index.html",
+    "start_url": "/",
     "background_color": "#3367D6",
     "display": "standalone",
     "theme_color": "#3367D6"
