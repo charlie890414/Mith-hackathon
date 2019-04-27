@@ -37,8 +37,8 @@ app.get('/delbindURI', function (request, response) {
             token: result.token
         }).then(data => {
             console.log(data);
-            response.status(200).send("OK");
             result.token = null;
+            response.status(200).send("OK");
         }).catch(error => {
             response.status(400).send("Error");
         });
@@ -132,12 +132,14 @@ app.get('/success', function (request, response) {
             "token": data
         }).exec(function (err) {
             if (err) {
+                console.log(err);
                 response.status(400).send("Error");
             } else {
                 response.status(200).send("Ok");
             }
         });
-    }).catch(error => {
+    }).catch(err => {
+        console.log(err);
         response.status(400).send("Error");
     });
 });
