@@ -1,7 +1,8 @@
 const MithVaultSDK = require('./dist/mith-vault-sdk.min.js');
 const express = require('express');
-const fileUpload = require('express-fileupload');
+const multer = require('multer');
 const mongoose = require('mongoose');
+const path = require('path');
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/Mith', {
     useNewUrlParser: true
@@ -11,7 +12,19 @@ const app = new express();
 const menu = require('./models/menu');
 const movie = require('./models/movie');
 const account = require('./models/account');
-const bodyParser = require('body-parser');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now()+"-"+file.originalname);  
+    }
+});
+
+var upload = multer({
+    storage: storage
+})
 
 const clientId = '0bb0dc2308c147f3a6b9f47aee5fbf5e';
 const clientSecret = '6bbd412f129674644d12c075336f1a7285cb586770e904049acc184174e25e66e036427201fab9a6dd2e3df81503e5eafd6750573fd5def49e695bf0d4511c88';
@@ -22,11 +35,19 @@ const sdk = new MithVaultSDK({
     miningKey
 });
 
-app.use(fileUpload());
-
 app.get('/bindURI', function (request, response) {
     const url = sdk.getBindURI();
     response.status(200).send(url + "&user_id=" + request.query.user_id);
+});
+
+app.get('/uploads/:id', function (request, response) {
+    response.status(200).sendFile(path.resolve("./uploads/"+request.params.id));
+});
+
+app.get('/getmovielist', function (request, response) {
+    movie.find({}).exec(function (err, result) {
+        response.status(200).send(result);
+    });
 });
 
 app.get('/delbindURI', function (request, response) {
@@ -45,11 +66,12 @@ app.get('/delbindURI', function (request, response) {
     });
 });
 
-app.post('/uplaod_movie', function (request, response) {    
+app.post('/uplaodmovie', upload.single('movie'), function (request, response) {
+    var file = request.file;
     new movie({
         'owner': request.query.user_id,
         'depend': request.query.menu_id,
-        'movie': request.files.movie.data
+        'movie': file.path
     }).save(function (err, results) {
         if (err) {
             console.log(err);
@@ -60,7 +82,7 @@ app.post('/uplaod_movie', function (request, response) {
     });
 });
 
-app.post('/create_menu', function (request, response) {
+app.post('/createmenu', function (request, response) {
     new menu({
         'owner': request.query.user_id,
         'title': "menu_" + new Date(),
