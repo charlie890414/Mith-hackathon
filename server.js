@@ -162,7 +162,7 @@ app.post('/login', function (request, response) {
                 if (bcrypt.compareSync(request.query.password, result.password)) {
                     request.session.login = true;
                     request.session.id = result._id;
-                    response.status(200).render("index.html");
+                    response.status(200).send("OK");
                 } else {
                     response.status(400).send("Error");
                 }
