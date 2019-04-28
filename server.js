@@ -275,6 +275,7 @@ app.get('/userinfo', function (request, response) {
     account.findOne({
         '_id': request.query.user_id
     }).exec(function (err, result) {
+        console.log(result);
         sdk.getUserInformation({
             token: result.token
         }).then(data => {
