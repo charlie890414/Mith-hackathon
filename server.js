@@ -2,8 +2,11 @@ const MithVaultSDK = require('./dist/mith-vault-sdk.min.js');
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
+var cookieParser = require('cookie-parser');
 const path = require('path');
+var session = require('express-session');
 const bodyParser = require('body-parser');
+var MongoStore = require('connect-mongo')(session);
 mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/Mith', {
     useNewUrlParser: true
@@ -19,7 +22,7 @@ var storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now()+"-"+file.originalname);  
+        cb(null, Date.now() + "-" + file.originalname);
     }
 });
 
@@ -36,7 +39,24 @@ const sdk = new MithVaultSDK({
     miningKey
 });
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+app.use(cookieParser('secret'));
+app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+    secret: 'secret',
+    store: new MongoStore({
+        url: 'mongodb://localhost:27017/chuan'
+    }),
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 86400000
+    }
+}));
 app.use(express.static(__dirname + '/view'));
 
 app.set('view engine', 'html');
@@ -51,7 +71,7 @@ app.get('/bindURI', function (request, response) {
 });
 
 app.get('/uploads/:id', function (request, response) {
-    response.status(200).sendFile(path.resolve("./uploads/"+request.params.id));
+    response.status(200).sendFile(path.resolve("./uploads/" + request.params.id));
 });
 
 app.get('/getmovielist', function (request, response) {
@@ -75,13 +95,12 @@ app.get('/delbindURI', function (request, response) {
         }).then(data => {
             account.update({
                 '_id': request.query.user_id
-            },{
+            }, {
                 "token": null
             }).exec(function (err, result) {
-                if(err){
+                if (err) {
                     response.status(400).send("Error");
-                }
-                else{
+                } else {
                     response.status(200).send("OK");
                 }
             });
@@ -139,12 +158,18 @@ app.post('/login', function (request, response) {
         account.findOne({
             'account': request.query.account
         }).exec(function (err, result) {
-            console.log(result);
-            if (bcrypt.compareSync(request.query.password, result.password)) {
-                response.status(200).send(result._id);
-            } else {
+            try {
+                if (bcrypt.compareSync(request.query.password, result.password)) {
+                    request.session.login = true;
+                    request.session.id = result._id;
+                    response.status(200).render("index.html");
+                } else {
+                    response.status(400).send("Error");
+                }
+            } catch (e) {
                 response.status(400).send("Error");
             }
+
         });
     else response.status(400).send("Input Error");
 });
@@ -153,7 +178,7 @@ app.get('/check', function (request, response) {
     account.findOne({
         '_id': request.query.user_id
     }).exec(function (err, result) {
-        if (result.token!=null) {
+        if (result.token != "") {
             response.status(200).send("OK");
         } else {
             response.status(400).send("Error");
@@ -166,12 +191,14 @@ app.post('/signup', function (request, response) {
         new account({
             "account": request.query.account,
             "password": bcrypt.hashSync(request.query.password, bcrypt.genSaltSync(8), null),
-            "token":null
-        }).save(function (err, results) {
+            "token": ""
+        }).save(function (err, result) {
             if (err) {
                 response.status(400).send("Error");
             } else {
-                response.status(200).send(results._id);
+                request.session.login = true;
+                request.session.id = result._id;
+                response.status(200).send();
             }
         });
     else response.status(400).send("Input Error");
@@ -207,6 +234,8 @@ app.get('/success', function (request, response) {
 app.get('/faillure', function (request, response) {
     response.status(400).send("Error");
 });
+
+
 
 app.listen(5000);
 console.log("Running at Port 5000");
