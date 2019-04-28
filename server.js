@@ -278,7 +278,7 @@ app.get('/userinfo', function (request, response) {
         sdk.getUserInformation({
             token: result.token
         }).then(data => {
-            response.status(200).send(data);
+            response.status(200).send(data.balance);
         }).catch(error => {
             console.log(error);
             response.status(400).send("Error" + error);
