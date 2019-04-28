@@ -233,7 +233,19 @@ app.get('/faillure', function (request, response) {
     response.status(400).send("Error");
 });
 
-
+app.post('/mining', function (request, response) {
+    sdk.postUserMiningAction({
+        token: request.data.token,
+        uuid: crypto.randomBytes(16).toString("hex"),
+        reward: request.data.result,
+        happenedAt: null
+    }).then(data => {
+        response.status(200).send(data);
+    }).catch(error => {
+        response.status(400).send("Error" + error);
+    });
+});
 
 app.listen(5000);
 console.log("Running at Port 5000");
+
