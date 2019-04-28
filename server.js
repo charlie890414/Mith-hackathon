@@ -2,7 +2,6 @@ const MithVaultSDK = require('./dist/mith-vault-sdk.min.js');
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
-var https = require('https');
 var cookieParser = require('cookie-parser');
 const path = require('path');
 var session = require('express-session');
@@ -12,7 +11,6 @@ mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/Mith', {
     useNewUrlParser: true
 });
-
 var bcrypt = require('bcrypt-nodejs');
 const app = new express();
 const menu = require('./models/menu');
