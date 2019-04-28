@@ -16,7 +16,7 @@ const app = new express();
 const menu = require('./models/menu');
 const movie = require('./models/movie');
 const account = require('./models/account');
-const CryptoJS = require('crypto-js');
+var CryptoJS = require("crypto-js");
 const axios = require('axios');
 
 function _uuid() {
