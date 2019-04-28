@@ -221,7 +221,7 @@ app.get('/success', function (request, response) {
                 console.log(err);
                 response.status(400).send("Error");
             } else {
-                response.status(200).send("Ok");
+                response.status(200).send("<h1>請返回應用程式</h1>");
             }
         });
     }).catch(err => {
@@ -277,7 +277,7 @@ app.get('/userinfo', function (request, response) {
     }).exec(function (err, result) {
         console.log(result['token']);
         sdk.getUserInformation({
-            token: result['token'].toString()
+            token: result['token']
         }).then(data => {
             console.log(data);
             response.status(200).send(data.balance);
