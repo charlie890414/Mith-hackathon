@@ -16,6 +16,7 @@ const app = new express();
 const menu = require('./models/menu');
 const movie = require('./models/movie');
 const account = require('./models/account');
+const crypto = require('crypto');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
