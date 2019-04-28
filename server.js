@@ -235,9 +235,9 @@ app.get('/faillure', function (request, response) {
 
 app.post('/mining', function (request, response) {
     sdk.postUserMiningAction({
-        token: request.data.token,
+        token: request.query.token,
         uuid: crypto.randomBytes(16).toString("hex"),
-        reward: request.data.result,
+        reward: request.query.result,
         happenedAt: null
     }).then(data => {
         response.status(200).send(data);
