@@ -2,6 +2,7 @@ const MithVaultSDK = require('./dist/mith-vault-sdk.min.js');
 const express = require('express');
 const multer = require('multer');
 const mongoose = require('mongoose');
+var https = require('https');
 var cookieParser = require('cookie-parser');
 const path = require('path');
 var session = require('express-session');
@@ -242,6 +243,7 @@ app.post('/mining', function (request, response) {
     }).then(data => {
         response.status(200).send(data);
     }).catch(error => {
+        console.log(error);
         response.status(400).send("Error" + error);
     });
 });
