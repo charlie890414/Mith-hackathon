@@ -12,6 +12,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb://localhost:27017/Mith', {
     useNewUrlParser: true
 });
+
 var bcrypt = require('bcrypt-nodejs');
 const app = new express();
 const menu = require('./models/menu');
