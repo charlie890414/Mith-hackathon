@@ -233,18 +233,56 @@ app.get('/faillure', function (request, response) {
     response.status(400).send("Error");
 });
 
+
 app.post('/mining', function (request, response) {
-    sdk.postUserMiningAction({
-        token: request.query.token,
-        uuid: crypto.randomBytes(16).toString("hex"),
-        reward: request.query.result,
-        happenedAt: null
-    }).then(data => {
-        response.status(200).send(data);
-    }).catch(error => {
-        console.log(error);
-        response.status(400).send("Error" + error);
-    });
+    account.findOne({
+        '_id': request.query.user_id
+    }).exec(function (err, result) {
+        sdk.postUserMiningAction({
+            token: result.token,
+            uuid: crypto.randomBytes(16).toString("hex"),
+            reward: request.query.result,
+            happenedAt: null
+        }).then(data => {
+            response.status(200).send(data);
+        }).catch(error => {
+            console.log(error);
+            response.status(400).send("Error" + error);
+        });
+    });    
+});
+
+app.post('/mining', function (request, response) {
+    account.findOne({
+        '_id': request.query.user_id
+    }).exec(function (err, result) {
+        sdk.postUserMiningAction({
+            token: result.token,
+            uuid: crypto.randomBytes(16).toString("hex"),
+            reward: request.query.result,
+            happenedAt: null
+        }).then(data => {
+            response.status(200).send(data);
+        }).catch(error => {
+            console.log(error);
+            response.status(400).send("Error" + error);
+        });
+    });    
+});
+
+app.get('/userinfo', function (request, response) {
+    account.findOne({
+        '_id': request.query.user_id
+    }).exec(function (err, result) {
+        sdk.getUserInformation({
+            token: result.token
+        }).then(data => {
+            response.status(200).send(data);
+        }).catch(error => {
+            console.log(error);
+            response.status(400).send("Error" + error);
+        });
+    });    
 });
 
 app.listen(5000);
