@@ -275,9 +275,9 @@ app.get('/userinfo', function (request, response) {
     account.findOne({
         '_id': request.query.user_id
     }).exec(function (err, result) {
-        console.log(result[token]);
+        console.log(result['token']);
         sdk.getUserInformation({
-            token: result[token]
+            token: result['token']
         }).then(data => {
             console.log(data);
             response.status(200).send(data.balance);
