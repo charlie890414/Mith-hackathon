@@ -250,7 +250,7 @@ app.post('/mining', function (request, response) {
             console.log(error);
             response.status(400).send("Error" + error);
         });
-    });    
+    });
 });
 
 app.post('/mining', function (request, response) {
@@ -268,26 +268,30 @@ app.post('/mining', function (request, response) {
             console.log(error);
             response.status(400).send("Error" + error);
         });
-    });    
+    });
 });
 
 app.get('/userinfo', function (request, response) {
     account.findOne({
         '_id': request.query.user_id
     }).exec(function (err, result) {
-        console.log(result.token);
-        sdk.getUserInformation({
-            token: result.token.toString()
-        }).then(data => {
-            console.log(data);
-            response.status(200).send(data.balance);
-        }).catch(error => {
-            console.log(error);
-            response.status(400).send("Error" + error);
-        });
-    });    
+        const payload = {
+            client_id: clientId,
+            timestamp: Math.floor(Date.now() / 1000),
+            nonce: _randomInt()
+        }
+
+        const headers = {
+            Authorization: result.token
+        }
+        const res = _sendAPI.call(this, 'oauth/user-info', 'GET', {
+            headers,
+            params: payload
+        })
+
+        response.send(res);
+    });
 });
 
 app.listen(5000);
 console.log("Running at Port 5000");
-
